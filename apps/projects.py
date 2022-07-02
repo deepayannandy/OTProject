@@ -109,12 +109,14 @@ def showWOCreate(otdb):
     global isworkorder
     global avlprojects
     st.title("Add new workorder")
-    po = st.selectbox("Select Consumable Product", avlprojects)
-    wo= st.text_input("WorkOrder Number")
+    col1, col2 = st.columns((1, 3))
+    po = col1.selectbox("Select Consumable Product", avlprojects)
+    wo= col2.text_input("WorkOrder Number")
     empid = st.multiselect("Select Employees", createuserList(otdb))
     st.write("Consumable Product")
-    conlist = st.selectbox("Select Consumable Product", list(condata.keys()))
-    conlistq = st.number_input("Consumable Qnt", 1, condata[conlist])
+    col3, col4 = st.columns((2, 3))
+    conlist = col3.selectbox("Select Consumable Product", list(condata.keys()))
+    conlistq = col4.number_input("Consumable Qnt", 1, condata[conlist])
     addcon = st.button("Add Consumable")
 
 
@@ -123,8 +125,9 @@ def showWOCreate(otdb):
     if len(conp) > 0:
         st.write(conp)
     st.write("Equipment List")
-    equiplist = st.selectbox("Select Equipment ", list(eqpdata.keys()))
-    equiplistq = st.number_input("Equipment Qnt", 1, eqpdata[equiplist])
+    col5, col6 = st.columns((2, 3))
+    equiplist = col5.selectbox("Select Equipment ", list(eqpdata.keys()))
+    equiplistq = col6.number_input("Equipment Qnt", 1, eqpdata[equiplist])
     addequ = st.button("Add Equipment")
     if (addequ):
         equip[equiplist] = equiplistq

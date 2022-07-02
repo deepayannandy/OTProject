@@ -1,5 +1,5 @@
 import streamlit as st
-from apps import home,employee, equipment, payroll, projects, salespreoprt, consumable
+from apps import home,employee, equipment, payroll, projects, salespreoprt, consumable, projectviewer
 import pickle
 from pathlib import Path
 from streamlit_option_menu import option_menu
@@ -12,11 +12,11 @@ st.set_page_config(page_title='OTS Admin App',page_icon='',menu_items={
 })
 
 
-menu=["Home","Project Tracking","Employee database","Equipment database","Consumable inventory","Payroll","Sales report"]
+menu=["Home","Project Dashboard","Project Management","Employee database","Equipment database","Consumable inventory","Payroll","Sales report"]
 
 def streamlit_menu():
-    options = ["Home", "Projects", "Employees", "Equipments", "Consumables","Payroll","Sales reoprt"]  # required
-    icons = ["house", "hammer", "person-fill", "gear", "bag","wallet2","file-bar-graph"]  # optional
+    options = ["Home","Project Dashboard", "Projects Management", "Employees", "Equipments", "Consumables","Payroll","Sales reoprt"]  # required
+    icons = ["house", "hammer","bi-card-text", "person-fill", "gear", "bag","wallet2","file-bar-graph"]  # optional
     with st.sidebar:
         selected = option_menu(
             menu_title="Main Menu",  # required
@@ -30,7 +30,7 @@ def main():
     selected = streamlit_menu()
     if selected=="Home":
         home.app()
-    if selected=="Projects":
+    if selected=="Projects Management":
         projects.app(otdb)
     if selected=="Employees":
         employee.app(otdb)
@@ -38,6 +38,8 @@ def main():
         equipment.app(otdb)
     if selected=="Consumables":
         consumable.app(otdb)
+    if selected=="Project Dashboard":
+        projectviewer.app(otdb)
 
 
 
