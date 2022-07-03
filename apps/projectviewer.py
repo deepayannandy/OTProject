@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import qrcode
 from PIL import Image
-from pyzbar.pyzbar import decode
+import cv2
 import numpy as np
 
 selection=["PO Number","WO Number"]
@@ -75,10 +75,16 @@ def app(otdb):
     searchdata=col2.text_input("Enter "+SSelection)
     up= st.file_uploader("Upload QR Code",type=["png","jpg","jpeg"])
     if up != None:
-        text=decode(np.array(Image.open(up)))
-        st.write(text)
-        searchdata=text
-        st.write(text)
+        decoder = cv2.QRCodeDetector()
+        image = np.array(Image.open(up))
+        try:
+            data, vertices, rectified_qr_code = decoder.detectAndDecode(image)
+            if len(data) > 0:
+                print("Decoded Data: '{}'".format(data))
+            st.write(data)
+        except:
+            st.error("Something went wrong!")
+
 
     search=st.button("Search")
     if search:
