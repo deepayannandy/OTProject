@@ -55,7 +55,7 @@ def streamlit_menu():
             menu_title=None,  # required
             options=options, # required
             icons=icons,  # optional
-            menu_icon="cast",  # optional
+            menu_icon="cast",  # optional nww
             default_index=0,  # optional
             orientation="horizontal",
         )

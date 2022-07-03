@@ -35,7 +35,7 @@ def showEMPDetails(otdb,emp):
         qr.add_data(em["uniqueid"])
         qr.make(fit=True)
         img=qr.make_image()
-        imgpath=os.path.join("qr_image",em["uniqueid"]+".png")
+        imgpath=os.path.join("qr_images",em["uniqueid"]+".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
 
@@ -56,7 +56,7 @@ def showWODetails(otdb,wo):
         qr.add_data(wo["wo"])
         qr.make(fit=True)
         img = qr.make_image()
-        imgpath = os.path.join("qr_image", wo["wo"] + ".png")
+        imgpath = os.path.join("qr_images", wo["wo"] + ".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
     st.write("Used Equipments")
@@ -79,6 +79,7 @@ def app(otdb):
         st.write(text)
         searchdata=text
         st.write(text)
+
     search=st.button("Search")
     if search:
         visiablereasult=True
