@@ -3,7 +3,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import qrcode
 from PIL import Image
-import cv2
 import numpy as np
 
 selection=["PO Number","WO Number"]
@@ -75,7 +74,7 @@ def app(otdb):
     searchdata=col2.text_input("Enter "+SSelection)
     up= st.file_uploader("Upload QR Code",type=["png","jpg","jpeg"])
     if up != None:
-        decoder = cv2.QRCodeDetector()
+        #decoder = cv2.QRCodeDetector()
         image = np.array(Image.open(up))
         try:
             data, vertices, rectified_qr_code = decoder.detectAndDecode(image)
