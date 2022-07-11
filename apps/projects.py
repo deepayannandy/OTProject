@@ -229,7 +229,7 @@ def createprojects(otdb):
             col0, col00 = st.columns((3, 1))
             col00.write("Scan to See the Project")
             with col00:
-                qr.add_data("http://3.95.56.247:8080/wo/" + po)
+                qr.add_data("http://3.95.56.247:8080/po/" + po)
                 qr.make(fit=True)
                 img = qr.make_image()
                 imgpath = os.path.join("qr_images", po + ".png")
