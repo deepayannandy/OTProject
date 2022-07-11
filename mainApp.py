@@ -12,6 +12,7 @@ st.set_page_config(page_title='OTS Admin App',page_icon='',menu_items={
 })
 
 
+
 menu=["Home","Project Dashboard","Project Management","Employee database","Equipment database","Consumable inventory","Payroll","Sales report"]
 
 def streamlit_menu():
@@ -19,7 +20,7 @@ def streamlit_menu():
     icons = ["house", "hammer","bi-card-text", "person-fill", "gear", "bag","wallet2","file-bar-graph"]  # optional
     with st.sidebar:
         selected = option_menu(
-            menu_title="Main Menu",  # required
+            menu_title="Quick Response Coded List( QRCL)",  # required
             options=options, # required
             icons=icons,  # optional
             menu_icon="cast",  # optional
@@ -27,6 +28,16 @@ def streamlit_menu():
         )
     return selected
 def main():
+    streamlit_style = """
+    			<style>
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+    			html, body, [class*="css"]  {
+    			font-family: 'Roboto', sans-serif;
+    			}
+    			</style>
+    			"""
+    st.markdown(streamlit_style, unsafe_allow_html=True)
     selected = streamlit_menu()
     if selected=="Home":
         home.app()

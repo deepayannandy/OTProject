@@ -20,6 +20,19 @@ def streamlit_menu(options):
             orientation="horizontal",
         )
     return selected
+def streamlit_menuEMP(options):
+    visiableoption=[]
+    for empname in options:
+        visiableoption.append(empname.split("(")[1].split(")")[0])
+
+    selected = option_menu(
+            menu_title=None,  # required
+            options=visiableoption, # required  # optional
+            menu_icon="cast",  # optional
+            default_index=0,  # optional
+            orientation="horizontal",
+        )
+    return options[visiableoption.index(selected)]
 def openImage(path):
     im=Image.open(path)
     return im
@@ -31,7 +44,7 @@ def showEMPDetails(otdb,emp):
     col0, col00 = st.columns((3, 1))
     col0.metric("Employee Name", em["fullname"])
     with col00:
-        qr.add_data(em["uniqueid"])
+        qr.add_data("http://3.95.56.247:8080/employee/"+em["uniqueid"])
         qr.make(fit=True)
         img=qr.make_image()
         imgpath=os.path.join("qr_images",em["uniqueid"]+".png")
@@ -52,39 +65,27 @@ def showWODetails(otdb,wo):
     col0, col00 = st.columns((3, 1))
     col0.title("Work Details of : " + wo["wo"])
     with col00:
-        qr.add_data(wo["wo"])
+        qr.add_data("http://3.95.56.247:8080/wo/"+wo["wo"])
         qr.make(fit=True)
         img = qr.make_image()
         imgpath = os.path.join("qr_images", wo["wo"] + ".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
     st.write("Used Equipments")
-    st.table({"Consumables Name": wo["consumables"], "Quantity": wo["equipQ"]})
+    st.table({"Equipment Name": wo["equipments"], "Quantity": wo["equipQ"]})
     st.write("Consumables items")
-    st.table({"Consumables Name": wo["equipments"], "Quantity": wo["consQ"]})
+    st.table({"Consumables Name": wo["consumables"], "Quantity": wo["consQ"]})
     st.header("Assigned Employee details")
-    selectedemp=streamlit_menu(wo["assignedEmployee"])
+    selectedemp=streamlit_menuEMP(wo["assignedEmployee"])
     showEMPDetails(otdb,selectedemp)
 
 def app(otdb):
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     global visiablereasult
     st.title("Project Dashboard")
     col1 ,col2,= st.columns((1,2,))
     SSelection=col1.selectbox("Select Search type",selection)
     searchdata=col2.text_input("Enter "+SSelection)
-    up= st.file_uploader("Upload QR Code",type=["png","jpg","jpeg"])
-    if up != None:
-        #decoder = cv2.QRCodeDetector()
-        image = np.array(Image.open(up))
-        try:
-            data, vertices, rectified_qr_code = decoder.detectAndDecode(image)
-            if len(data) > 0:
-                print("Decoded Data: '{}'".format(data))
-            st.write(data)
-        except:
-            st.error("Something went wrong!")
-
-
     search=st.button("Search")
     if search:
         visiablereasult=True
@@ -93,7 +94,16 @@ def app(otdb):
         if len(projdata)>0:
             prj=projdata[0].to_dict()
             #st.write(prj)
-            st.title("Project Details of : "+prj["po"])
+            col0, col00 = st.columns((3, 1))
+            col0.title("Project Details:" + prj["po"])
+            with col00:
+                qr.add_data("http://3.95.56.247:8080/po/"+prj["po"])
+                qr.make(fit=True)
+                img = qr.make_image()
+                imgpath = os.path.join("qr_images",prj["po"]+ ".png")
+                img.save(imgpath)
+                st.image(openImage(imgpath))
+            #col0.title("Project Details of : "+prj["po"])
             st.metric("Job Description",prj["jobDescriptions"])
             col2,col3 = st.columns((1,2))
             col2.metric("Client Name",prj["clientName"])

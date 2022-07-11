@@ -22,7 +22,7 @@ def createDataFrame(rawdata):
         address.append(i["address"])
         work = ""
         for workorder in i["workorders"]:
-            work += work + workorder + ","
+            work = work + workorder + ","
         workorders.append(work)
         # emplist=""
         # for emp in i["assignedEmployee"]:
@@ -112,18 +112,18 @@ def showWOCreate(otdb):
     col1, col2 = st.columns((1, 3))
     po = col1.selectbox("Select Consumable Product", avlprojects)
     wo= col2.text_input("WorkOrder Number")
-    empid = st.multiselect("Select Employees", createuserList(otdb))
+    databaselink, name=createuserList(otdb)
+    empid = st.multiselect("Select Employees", name)
     st.write("Consumable Product")
     col3, col4 = st.columns((2, 3))
     conlist = col3.selectbox("Select Consumable Product", list(condata.keys()))
     conlistq = col4.number_input("Consumable Qnt", 1, condata[conlist])
     addcon = st.button("Add Consumable")
-
-
     if (addcon):
         conp[conlist] = conlistq
     if len(conp) > 0:
-        st.write(conp)
+        st.write("Consumables items")
+        st.table({"Consumables Name": conp.keys(), "Quantity": conp.values()})
     st.write("Equipment List")
     col5, col6 = st.columns((2, 3))
     equiplist = col5.selectbox("Select Equipment ", list(eqpdata.keys()))
@@ -132,10 +132,14 @@ def showWOCreate(otdb):
     if (addequ):
         equip[equiplist] = equiplistq
     if len(equip) > 0:
-        st.write(equip)
+        st.write("Used Equipments")
+        st.table({"Equipment Name": equip.keys(), "Quantity": equip.values()})
     submit = st.button("Create Work Order")
     if (submit):
-        data = {"wo":wo,"po": po, "assignedEmployee": empid, "consumables": list(conp.keys()), "consQ": list(conp.values()),
+        fianlemp=[]
+        for emp in empid:
+            fianlemp.append(databaselink[name.index(emp)])
+        data = {"wo":wo,"po": po, "assignedEmployee": fianlemp, "consumables": list(conp.keys()), "consQ": list(conp.values()),
                 "equipQ": list(equip.values()), "equipments": list(equip.keys())}
         st.success("Work Order Created Successfully")
         otdb.createWorkOrder(data)
@@ -189,9 +193,11 @@ def createprojects(otdb):
 def createuserList(otdb):
     data=otdb.getUserList()
     userlsit=[]
+    name=[]
     for user in data:
         userlsit.append(user["uniqueid"]+"("+user["fullname"]+")")
-    return userlsit
+        name.append(user["fullname"])
+    return userlsit,name
 def conitemname(otdb):
     data=otdb.getCONList()
     condata={}

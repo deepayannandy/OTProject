@@ -4,4 +4,5 @@ import os
 base_path=os.getcwd()
 
 def app():
-    st.image(Image.open(base_path+"/comp_logo/logo.jpeg"))
+    st.image(Image.open(base_path+"/comp_logo/logo.jpeg"),width=450)
+    st.title("Millions of Documents in your Pocket")
