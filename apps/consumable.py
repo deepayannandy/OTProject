@@ -1,12 +1,25 @@
+import qrcode
 import streamlit as st
 from PIL import Image
 import os
 
 from streamlit_option_menu import option_menu
-
 base_path=os.getcwd()
 isworkorder=False
+def openImage(path):
+    im=Image.open(path)
+    return im
+def inDB(otdb,type,id):
+    if type=="con":
+        res = otdb.db.collection("consumableItems").where("conId", "==", id).get()
+        if len(res)==1:
+            return True
+        else:
+            return False
+
+
 def createDataFrame(rawdata):
+
     ConName=[]
     DispatchQuantityforProject=[]
     NewpurchaseQuantity=[]
@@ -34,19 +47,34 @@ def streamlit_menu():
         )
     return selected
 def createcon(otdb):
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     conName=st.text_input("Consumable Name")
     col1, col2 = st.columns((2, 3))
-    conid=col1.text_input("Consumable ID")
+    with col1:
+        conid=col1.text_input("Consumable ID")
+        st.write("Consumable ID Naming Convention: XXX123")
     count=col2.text_input("Purchase Qnt")
     submit=st.button("Add Consumable")
     if submit:
-        if len(conid)==0 or len(conName)==0 or count=="0":
-            st.warning("Mandatory fields are empty!")
+        if inDB(otdb,'con',conid):
+            st.warning("This Consumable id already in use")
         else:
-            data = {'ConName': conName , "StockQuantity": int(count), "NewpurchaseQuantity": int(count), "DispatchQuantityforProject": 0,
-                    "conId": conid}
-            otdb.db.collection("consumableItems").document(conid).set(data)
-            st.success("Consumable added successfully!")
+            if len(conid)==0 or len(conName)==0 or count=="0":
+                st.warning("Mandatory fields are empty!")
+            else:
+                data = {'ConName': conName , "StockQuantity": int(count), "NewpurchaseQuantity": int(count), "DispatchQuantityforProject": 0,
+                        "conId": conid}
+                otdb.db.collection("consumableItems").document(conid).set(data)
+                col0, col00 = st.columns((3, 1))
+                col0.write("Scan to See the Equipment")
+                with col00:
+                    qr.add_data("http://3.95.56.247:8080/con/" + conid)
+                    qr.make(fit=True)
+                    img = qr.make_image()
+                    imgpath = os.path.join("qr_images", conid + ".png")
+                    img.save(imgpath)
+                    st.image(openImage(imgpath))
+                st.success("Consumable added successfully!")
 def showAddCon(otdb):
     global isworkorder
     st.title("Restock Inventory")

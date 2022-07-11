@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 import os
+import qrcode
 
 from streamlit_option_menu import option_menu
 
@@ -103,7 +104,25 @@ def showprojects(projects,otdb):
 def showwotable(wo):
     df = getworkorder(wo)
     st.table(df)
+def openImage(path):
+    im=Image.open(path)
+    return im
+def inDB(otdb,type,id):
+    if type=="wo":
+        res = otdb.db.collection("Workorders").where("wo", "==", id).get()
+        if len(res)==1:
+            return True
+        else:
+            return False
+    if type=="po":
+        res = otdb.db.collection("userProjects").where("po", "==", id).get()
+        if len(res)==1:
+            return True
+        else:
+            return False
+
 def showWOCreate(otdb):
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     condata = conitemname(otdb)
     eqpdata = equipname(otdb)
     global isworkorder
@@ -111,7 +130,9 @@ def showWOCreate(otdb):
     st.title("Add new workorder")
     col1, col2 = st.columns((1, 3))
     po = col1.selectbox("Select Consumable Product", avlprojects)
-    wo= col2.text_input("WorkOrder Number")
+    with col2:
+        wo= st.text_input("WorkOrder Number")
+        st.write("WO ID Naming Convention: XXX123")
     databaselink, name=createuserList(otdb)
     empid = st.multiselect("Select Employees", name)
     st.write("Consumable Product")
@@ -136,59 +157,85 @@ def showWOCreate(otdb):
         st.table({"Equipment Name": equip.keys(), "Quantity": equip.values()})
     submit = st.button("Create Work Order")
     if (submit):
-        fianlemp=[]
-        for emp in empid:
-            fianlemp.append(databaselink[name.index(emp)])
-        data = {"wo":wo,"po": po, "assignedEmployee": fianlemp, "consumables": list(conp.keys()), "consQ": list(conp.values()),
-                "equipQ": list(equip.values()), "equipments": list(equip.keys())}
-        st.success("Work Order Created Successfully")
-        otdb.createWorkOrder(data)
-        Udata = otdb.getUserList()
-        for emp in empid:
-            for userid in Udata:
-                if userid["uniqueid"] == emp.split("(")[0]:
-                    otdb.db.collection("users").document(userid["uid"]).update({"assignedprojects": po+"~"+wo})
-        conproducts = otdb.getCONList()
-        st.success("Assigned to Users Successfully")
-        res = otdb.db.collection("userProjects").where("po", "==", po).get()
-        oldwo = res[0].to_dict()["workorders"]
-        wod = list(oldwo)
-        wod.append(wo)
-        print(type(wod),wod)
-        otdb.db.collection("userProjects").document(po).update({"workorders":wod})
-        st.success("Assigned to Work Order Successfully")
-        for con in conp.keys():
-            for conproduct in conproducts:
-                if conproduct["ConName"] == con:
-                    otdb.db.collection("consumableItems").document(conproduct["conId"]).update(
-                        {"DispatchQuantityforProject": conproduct["DispatchQuantityforProject"] + conp[con],
-                         "StockQuantity": (conproduct["StockQuantity"] - conp[con])})
-        equips = otdb.getEQPList()
-        st.success("ConsumableItems database updated Successfully")
-        for equ in equip.keys():
-            for eq in equips:
-                if eq["EqName"] == equ:
-                    otdb.db.collection("equipments").document(eq["eqId"]).update(
-                        {"DispatchQuantityforProjects": eq["DispatchQuantityforProjects"] + equip[equ],
-                         "AvailableQuantity": (eq["AvailableQuantity"] - equip[equ])})
-        st.success("Equipments database updated Successfully")
-        conp.clear()
-        equip.clear()
-        st.success("Job Created successfully! ")
-        isworkorder=False
-    if isworkorder==False:
-        st.button("Close")
+        if inDB(otdb,"wo",wo):
+            st.warning("Work order id is already taken!")
+        else:
+            fianlemp=[]
+            for emp in empid:
+                fianlemp.append(databaselink[name.index(emp)])
+            data = {"wo":wo,"po": po, "assignedEmployee": fianlemp, "consumables": list(conp.keys()), "consQ": list(conp.values()),
+                    "equipQ": list(equip.values()), "equipments": list(equip.keys())}
+            st.success("Work Order Created Successfully")
+            otdb.createWorkOrder(data)
+            Udata = otdb.getUserList()
+            for emp in empid:
+                for userid in Udata:
+                    if userid["uniqueid"] == emp.split("(")[0]:
+                        otdb.db.collection("users").document(userid["uid"]).update({"assignedprojects": po+"~"+wo})
+            conproducts = otdb.getCONList()
+            st.success("Assigned to Users Successfully")
+            res = otdb.db.collection("userProjects").where("po", "==", po).get()
+            oldwo = res[0].to_dict()["workorders"]
+            wod = list(oldwo)
+            wod.append(wo)
+            print(type(wod),wod)
+            otdb.db.collection("userProjects").document(po).update({"workorders":wod})
+            st.success("Assigned to Work Order Successfully")
+            for con in conp.keys():
+                for conproduct in conproducts:
+                    if conproduct["ConName"] == con:
+                        otdb.db.collection("consumableItems").document(conproduct["conId"]).update(
+                            {"DispatchQuantityforProject": conproduct["DispatchQuantityforProject"] + conp[con],
+                             "StockQuantity": (conproduct["StockQuantity"] - conp[con])})
+            equips = otdb.getEQPList()
+            st.success("ConsumableItems database updated Successfully")
+            for equ in equip.keys():
+                for eq in equips:
+                    if eq["EqName"] == equ:
+                        otdb.db.collection("equipments").document(eq["eqId"]).update(
+                            {"DispatchQuantityforProjects": eq["DispatchQuantityforProjects"] + equip[equ],
+                             "AvailableQuantity": (eq["AvailableQuantity"] - equip[equ])})
+            st.success("Equipments database updated Successfully")
+            conp.clear()
+            equip.clear()
+            st.success("Job Created successfully! ")
+            col0, col00 = st.columns((3, 1))
+            col00.write("Scan to See the Work Order")
+            with col00:
+                qr.add_data("http://3.95.56.247:8080/wo/" + wo)
+                qr.make(fit=True)
+                img = qr.make_image()
+                imgpath = os.path.join("qr_images", wo + ".png")
+                img.save(imgpath)
+                st.image(openImage(imgpath))
+            isworkorder=False
+        if isworkorder==False:
+            st.button("Close")
 def createprojects(otdb):
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     st.write("Create a new Projects")
-    po = st.text_input("PO")
+    po = st.text_input("PO ID")
+    st.text("PO ID Naming Convention: XXX123")
     clintName = st.text_input("Client Name")
     address = st.text_area("Address")
     jobDescriptions = st.text_area("jobDescriptions")
     submit = st.button("Create Project")
     if (submit):
-        data = {"address": address, "po": po,"clientName":clintName, "jobDescriptions": jobDescriptions,"workorders":[]}
-        otdb.createProjct(data)
-        st.success("Project Created Successfully")
+        if inDB(otdb,"po",po):
+            st.warning("Po Id already taken!")
+        else:
+            data = {"address": address, "po": po,"clientName":clintName, "jobDescriptions": jobDescriptions,"workorders":[]}
+            otdb.createProjct(data)
+            col0, col00 = st.columns((3, 1))
+            col00.write("Scan to See the Project")
+            with col00:
+                qr.add_data("http://3.95.56.247:8080/wo/" + po)
+                qr.make(fit=True)
+                img = qr.make_image()
+                imgpath = os.path.join("qr_images", po + ".png")
+                img.save(imgpath)
+                st.image(openImage(imgpath))
+            st.success("Project Created Successfully")
 
 def createuserList(otdb):
     data=otdb.getUserList()
