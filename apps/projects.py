@@ -46,7 +46,7 @@ def createDataFrame(rawdata):
     #print(employeeid)
     global avlprojects
     avlprojects= po
-    df={"PO":po,"ClientName":clientName,"JobDescriptions":jobDescriptions,"WorkOrders":workorders}
+    df={"PO":po,"Client Name":clientName,"Job Descriptions":jobDescriptions,"Work Orders":workorders}
     return df
 def streamlit_menu():
     options = ["Projects List","WorkOrders","Create Project"]  # requiredß
@@ -168,7 +168,7 @@ def showWOCreate(otdb):
             st.success("Work Order Created Successfully")
             otdb.createWorkOrder(data)
             Udata = otdb.getUserList()
-            for emp in empid:
+            for emp in fianlemp:
                 for userid in Udata:
                     if userid["uniqueid"] == emp.split("(")[0]:
                         otdb.db.collection("users").document(userid["uid"]).update({"assignedprojects": po+"~"+wo})
@@ -208,6 +208,7 @@ def showWOCreate(otdb):
                 imgpath = os.path.join("qr_images", wo + ".png")
                 img.save(imgpath)
                 st.image(openImage(imgpath))
+                st.write("http://3.95.56.247:8080/wo/" + wo)
             isworkorder=False
         if isworkorder==False:
             st.button("Close")
@@ -235,6 +236,7 @@ def createprojects(otdb):
                 imgpath = os.path.join("qr_images", po + ".png")
                 img.save(imgpath)
                 st.image(openImage(imgpath))
+                st.write("http://3.95.56.247:8080/po/" + po)
             st.success("Project Created Successfully")
 
 def createuserList(otdb):

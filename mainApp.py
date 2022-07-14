@@ -1,5 +1,5 @@
 import streamlit as st
-from apps import home,employee, equipment, payroll, projects, salespreoprt, consumable, projectviewer
+from apps import home,employee, equipment, payroll, projects, salespreoprt, consumable, projectviewer, search
 import pickle
 from pathlib import Path
 from streamlit_option_menu import option_menu
@@ -13,7 +13,7 @@ st.set_page_config(page_title='OTS Admin App',page_icon='',menu_items={
 
 
 
-menu=["Home","Project Dashboard","Project Management","Employee database","Equipment database","Consumable inventory","Payroll","Sales report"]
+menu=["Home","Project Dashboard","Project Management","Employee database","Equipment database","Consumables","Payroll","Sales report"]
 
 def streamlit_menu():
     options = ["Home","Project Dashboard", "Projects Management", "Employees", "Equipments", "Consumables","Payroll","Sales reoprt"]  # required
@@ -41,6 +41,7 @@ def main():
     selected = streamlit_menu()
     if selected=="Home":
         home.app()
+        search.app()
     if selected=="Projects Management":
         projects.app(otdb)
     if selected=="Employees":

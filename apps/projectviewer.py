@@ -50,6 +50,7 @@ def showEMPDetails(otdb,emp):
         imgpath=os.path.join("qr_images",em["uniqueid"]+".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
+        st.write("http://3.95.56.247:8080/employee/"+em["uniqueid"])
 
     col4, col5 = st.columns((1, 2))
     col4.metric("Unique id", em["uniqueid"])
@@ -71,6 +72,7 @@ def showWODetails(otdb,wo):
         imgpath = os.path.join("qr_images", wo["wo"] + ".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
+        st.write("http://3.95.56.247:8080/wo/"+wo["wo"])
     st.write("Used Equipments")
     st.table({"Equipment Name": wo["equipments"], "Quantity": wo["equipQ"]})
     st.write("Consumables items")
@@ -103,6 +105,7 @@ def app(otdb):
                 imgpath = os.path.join("qr_images",prj["po"]+ ".png")
                 img.save(imgpath)
                 st.image(openImage(imgpath))
+                st.write("http://3.95.56.247:8080/po/"+prj["po"])
             #col0.title("Project Details of : "+prj["po"])
             st.metric("Job Description",prj["jobDescriptions"])
             col2,col3 = st.columns((1,2))

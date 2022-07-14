@@ -31,7 +31,7 @@ def createDataFrame(rawdata):
         NewpurchaseQuantity.append(i["NewpurchaseQuantity"])
         StockQuantity.append(i["StockQuantity"])
         conId.append(i["conId"])
-    df={"CONId":conId,"Product Name":ConName,"StockQuantity":StockQuantity,"DispatchQuantityforProject":DispatchQuantityforProject,"NewpurchaseQuantity":NewpurchaseQuantity}
+    df={"QR-ID":conId,"Specifications":ConName,"Stock Quantity":StockQuantity,"Dispatch Quantity":DispatchQuantityforProject,"New Orders":NewpurchaseQuantity}
     return df
 def streamlit_menu():
     options = ["Available Consumables","Add New"]  # requiredß
@@ -74,6 +74,7 @@ def createcon(otdb):
                     imgpath = os.path.join("qr_images", conid + ".png")
                     img.save(imgpath)
                     st.image(openImage(imgpath))
+                    st.write("http://3.95.56.247:8080/con/" + conid)
                 st.success("Consumable added successfully!")
 def showAddCon(otdb):
     global isworkorder
@@ -101,7 +102,7 @@ def app(otdb):
     selected= streamlit_menu()
     global isworkorder
     if selected=="Available Consumables":
-        st.title("Consumable inventory")
+        st.title("Consumables")
         df = createDataFrame(otdb.getCONList())
         st.table(df)
         if isworkorder == False:
@@ -111,5 +112,5 @@ def app(otdb):
         if isworkorder:
             showAddCon(otdb)
     if selected =="Add New":
-        st.title("Add new Consumable inventory")
+        st.title("Add new Consumables")
         createcon(otdb)

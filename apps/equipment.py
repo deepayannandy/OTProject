@@ -33,7 +33,7 @@ def createDataFrame(rawdata):
         DispatchQuantityforProjects.append(i["DispatchQuantityforProjects"])
         Descriptions.append(i["Descriptions"])
         AvailableQuantity.append(i["AvailableQuantity"])
-    df={"EQPName":EqName,"EQId":eqId,"InStock":InStock,"AvailableQuantity":AvailableQuantity,"DispatchQuantityforProjects":DispatchQuantityforProjects,"Descriptions":Descriptions}
+    df={"Equipment":EqName,"QR-ID":eqId,"InStock":InStock,"Available Quantity":AvailableQuantity,"Dispatch":DispatchQuantityforProjects,}
     return df
 def streamlit_menu():
     options = ["Available Equipments","Add New"]  # requiredß
@@ -77,6 +77,7 @@ def createequip(otdb):
                     imgpath = os.path.join("qr_images", eqid + ".png")
                     img.save(imgpath)
                     st.image(openImage(imgpath))
+                    st.write("http://3.95.56.247:8080/eq/" + eqid)
                 st.success("Equipment added successfully!")
 
 def app(otdb):

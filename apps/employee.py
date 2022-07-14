@@ -8,6 +8,7 @@ def createDataFrame(rawdata):
     mobileNo=[]
     email=[]
     ssn=[]
+    status=[]
     uniqueid=[]
     assignedprojects=[]
     for i in rawdata:
@@ -17,7 +18,11 @@ def createDataFrame(rawdata):
         ssn.append(i["ssn"])
         uniqueid.append(i["uniqueid"])
         assignedprojects.append(i["assignedprojects"])
-    df={"Name":fullname,"Contact":mobileNo,"Email":email,"SSN":ssn,"Project":assignedprojects,"QRID":uniqueid}
+        if i["assignedprojects"]=="NA":
+            status.append("Not Allocated")
+        else:
+            status.append("At a Job")
+    df={"Name":fullname,"Contact":mobileNo,"Email":email,"SSN":ssn,"Project":assignedprojects,"QRID":uniqueid,"Status":status}
     return df
 def app(otdb):
     #st.image(Image.open(base_path+"/comp_logo/logo0.png"))
