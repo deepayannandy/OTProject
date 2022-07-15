@@ -89,9 +89,9 @@ def showAddCon(otdb):
             st.warning("Please fill the required data!")
         else:
             index=df["Specifications"].index(con)
-            data = {'ConName': con, "StockQuantity": int(df["StockQuantity"][index]+int(qnt)), "NewpurchaseQuantity": int(qnt), "DispatchQuantityforProject": df["DispatchQuantityforProject"][index],
-                    "conId": df["CONId"][index]}
-            otdb.db.collection("consumableItems").document(df["CONId"][index]).set(data)
+            data = {'ConName': con, "StockQuantity": int(df["Stock Quantity"][index]+int(qnt)), "NewpurchaseQuantity": int(qnt), "DispatchQuantityforProject": df["Dispatch Quantity"][index],
+                    "conId": df["QR-ID"][index]}
+            otdb.db.collection("consumableItems").document(df["QR-ID"][index]).set(data)
             st.success("Inventory Updated successfully!")
             isworkorder=False
     if isworkorder==False:

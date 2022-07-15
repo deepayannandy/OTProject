@@ -101,9 +101,43 @@ def showprojects(projects,otdb):
             isworkorder=True
     if isworkorder:
         showWOCreate(otdb)
-def showwotable(wo):
+def showwotable(wo,otdb):
+    global isworkorder
     df = getworkorder(wo)
     st.table(df)
+    if isworkorder==False :
+        addemp=st.button("Add Employee to WO")
+        if addemp:
+            isworkorder=True
+    if isworkorder:
+        addEmp(otdb)
+def addEmp(otdb):
+    global isworkorder
+    emplist=otdb.getUserList()
+    WOs=otdb.getwo()
+    names=[]
+    empid=[]
+    wos=[]
+    #print(WOs)
+    for emp in emplist:
+        names.append(emp["fullname"])
+        empid.append(emp["uniqueid"])
+    for wo in WOs:
+        wos.append(wo["wo"])
+    col1, col2 = st.columns((2, 3))
+    selectedwo=col1.selectbox("Select WO",wos)
+    selectedempid=col2.multiselect("Select Employee",names)
+    add= st.button("Add Employees")
+    if add and len(selectedempid)>0:
+        finalEmpList=(WOs[wos.index(selectedwo)]["assignedEmployee"])
+        for selectedemp in selectedempid:
+            finalEmpList.append(empid[names.index(selectedemp)]+"("+selectedemp+")")
+            print(WOs[wos.index(selectedwo)]["po"],emplist[names.index(selectedemp)]["uid"])
+            otdb.db.collection("users").document(emplist[names.index(selectedemp)]["uid"]).update({"assignedprojects": WOs[wos.index(selectedwo)]["po"] + "~" + selectedwo})
+        otdb.db.collection("Workorders").document(selectedwo).update({"assignedEmployee": finalEmpList})
+        st.success("User added successfully!")
+        isworkorder=False
+
 def openImage(path):
     im=Image.open(path)
     return im
@@ -268,6 +302,6 @@ def app(otdb):
     if selected=="Create Project":
         createprojects(otdb)
     if selected=="WorkOrders":
-        showwotable(otdb.getwo())
+        showwotable(otdb.getwo(),otdb)
 
 
