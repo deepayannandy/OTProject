@@ -81,14 +81,14 @@ def showAddCon(otdb):
     st.title("Restock Inventory")
     col1, col2 = st.columns((3, 1))
     df= createDataFrame(otdb.getCONList())
-    con = col1.selectbox("Select Consumable Product", df["Product Name"])
+    con = col1.selectbox("Select Consumable Product", df["Specifications"])
     qnt = col2.text_input("ReStock Qnt")
     submit=st.button("Add")
     if submit:
         if len(con)==0 or len(qnt)==0:
             st.warning("Please fill the required data!")
         else:
-            index=df["Product Name"].index(con)
+            index=df["Specifications"].index(con)
             data = {'ConName': con, "StockQuantity": int(df["StockQuantity"][index]+int(qnt)), "NewpurchaseQuantity": int(qnt), "DispatchQuantityforProject": df["DispatchQuantityforProject"][index],
                     "conId": df["CONId"][index]}
             otdb.db.collection("consumableItems").document(df["CONId"][index]).set(data)
