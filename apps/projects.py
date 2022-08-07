@@ -4,12 +4,14 @@ import os
 import qrcode
 
 from streamlit_option_menu import option_menu
+import random
 
 isworkorder=False
 base_path=os.getcwd()
 conp = {}
 equip={}
 avlprojects=[]
+
 def createDataFrame(rawdata):
     address=[]
     clientName=[]
@@ -94,6 +96,15 @@ def getworkorder(swo):
 def showprojects(projects,otdb):
     global isworkorder
     df = createDataFrame(projects)
+    hide_table_row_index = """
+                    <style>
+                    thead tr th:first-child {display:none}
+                    tbody th {display:none}
+                    </style>
+                    """
+
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.table(df)
     if isworkorder==False :
         addWO=st.button("Create WorkOrder")
@@ -104,6 +115,15 @@ def showprojects(projects,otdb):
 def showwotable(wo,otdb):
     global isworkorder
     df = getworkorder(wo)
+    hide_table_row_index = """
+                    <style>
+                    thead tr th:first-child {display:none}
+                    tbody th {display:none}
+                    </style>
+                    """
+
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.table(df)
     if isworkorder==False :
         addemp=st.button("Add Employee to WO")
@@ -161,36 +181,59 @@ def showWOCreate(otdb):
     eqpdata = equipname(otdb)
     global isworkorder
     global avlprojects
-    st.title("Add new workorder")
+    st.title("Add new Work order")
     col1, col2 = st.columns((1, 3))
-    po = col1.selectbox("Select Consumable Product", avlprojects)
-    with col2:
-        wo= st.text_input("WorkOrder Number")
-        st.write("WO ID Naming Convention: XXX123")
+    po = st.selectbox("PO Number", avlprojects)
+
     databaselink, name=createuserList(otdb)
     empid = st.multiselect("Select Employees", name)
-    st.write("Consumable Product")
+    st.write("Consumable")
     col3, col4 = st.columns((2, 3))
     conlist = col3.selectbox("Select Consumable Product", list(condata.keys()))
-    conlistq = col4.number_input("Consumable Qnt", 1, condata[conlist])
+    conlistq = col4.number_input("Consumables", 1, condata[conlist])
     addcon = st.button("Add Consumable")
     if (addcon):
         conp[conlist] = conlistq
     if len(conp) > 0:
         st.write("Consumables items")
+        hide_table_row_index = """
+                        <style>
+                        thead tr th:first-child {display:none}
+                        tbody th {display:none}
+                        </style>
+                        """
+
+        # Inject CSS with Markdown
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table({"Consumables Name": conp.keys(), "Quantity": conp.values()})
-    st.write("Equipment List")
+    st.write("Equipment")
     col5, col6 = st.columns((2, 3))
     equiplist = col5.selectbox("Select Equipment ", list(eqpdata.keys()))
-    equiplistq = col6.number_input("Equipment Qnt", 1, eqpdata[equiplist])
+    equiplistq = col6.number_input("Equipments", 1, eqpdata[equiplist])
     addequ = st.button("Add Equipment")
     if (addequ):
         equip[equiplist] = equiplistq
     if len(equip) > 0:
         st.write("Used Equipments")
+        hide_table_row_index = """
+                        <style>
+                        thead tr th:first-child {display:none}
+                        tbody th {display:none}
+                        </style>
+                        """
+
+        # Inject CSS with Markdown
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table({"Equipment Name": equip.keys(), "Quantity": equip.values()})
     submit = st.button("Create Work Order")
     if (submit):
+        while True:
+            n = random.randint(0, 99)
+            wo = "WO_" + po + "_" +str(n)
+            if inDB(otdb, "wo", wo):
+                pass
+            else:
+                break
         if inDB(otdb,"wo",wo):
             st.warning("Work order id is already taken!")
         else:
@@ -250,16 +293,15 @@ def createprojects(otdb):
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     st.write("Create a new Projects")
     po = st.text_input("PO ID")
-    st.text("PO ID Naming Convention: XXX123")
     clintName = st.text_input("Client Name")
     address = st.text_area("Address")
-    jobDescriptions = st.text_area("jobDescriptions")
+    jobDescriptions = st.text_area("Job Descriptions")
     submit = st.button("Create Project")
     if (submit):
         if inDB(otdb,"po",po):
             st.warning("Po Id already taken!")
         else:
-            data = {"address": address, "po": po,"clientName":clintName, "jobDescriptions": jobDescriptions,"workorders":[]}
+            data = {"address": address, "po": po,"clientName":clintName, "jobDescriptions": jobDescriptions,"workorders":[],"woc":0}
             otdb.createProjct(data)
             col0, col00 = st.columns((3, 1))
             col00.write("Scan to See the Project")
@@ -302,6 +344,15 @@ def app(otdb):
     if selected=="Create Project":
         createprojects(otdb)
     if selected=="WorkOrders":
+        hide_table_row_index = """
+                        <style>
+                        thead tr th:first-child {display:none}
+                        tbody th {display:none}
+                        </style>
+                        """
+
+        # Inject CSS with Markdown
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
         showwotable(otdb.getwo(),otdb)
 
 

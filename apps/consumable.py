@@ -6,6 +6,8 @@ import os
 from streamlit_option_menu import option_menu
 base_path=os.getcwd()
 isworkorder=False
+
+
 def openImage(path):
     im=Image.open(path)
     return im
@@ -53,7 +55,7 @@ def createcon(otdb):
     with col1:
         conid=col1.text_input("Consumable ID")
         st.write("Consumable ID Naming Convention: XXX123")
-    count=col2.text_input("Purchase Qnt")
+    count=col2.text_input("Purchase Quantity")
     submit=st.button("Add Consumable")
     if submit:
         if inDB(otdb,'con',conid):
@@ -82,7 +84,7 @@ def showAddCon(otdb):
     col1, col2 = st.columns((3, 1))
     df= createDataFrame(otdb.getCONList())
     con = col1.selectbox("Select Consumable Product", df["Specifications"])
-    qnt = col2.text_input("ReStock Qnt")
+    qnt = col2.text_input("ReStock Quantity")
     submit=st.button("Add")
     if submit:
         if len(con)==0 or len(qnt)==0:
@@ -104,6 +106,15 @@ def app(otdb):
     if selected=="Available Consumables":
         st.title("Consumables")
         df = createDataFrame(otdb.getCONList())
+        hide_table_row_index = """
+                                <style>
+                                thead tr th:first-child {display:none}
+                                tbody th {display:none}
+                                </style>
+                                """
+
+        # Inject CSS with Markdown
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table(df)
         if isworkorder == False:
             addWO = st.button("Restock Inventory")

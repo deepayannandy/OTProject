@@ -6,6 +6,15 @@ import qrcode
 from streamlit_option_menu import option_menu
 
 options=["Search Equipment","Search Consumables"]
+hide_table_row_index = """
+                <style>
+                thead tr th:first-child {display:none}
+                tbody th {display:none}
+                </style>
+                """
+
+    # Inject CSS with Markdown
+st.markdown(hide_table_row_index, unsafe_allow_html=True)
 def showQr(type,data,name):
     st.title("Scan to see know more")
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)

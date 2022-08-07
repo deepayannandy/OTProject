@@ -55,7 +55,7 @@ def createequip(otdb):
     with col1:
         eqid=st.text_input("Equipment ID")
         st.write("Equipment ID Naming Convention: XXX123")
-    count=col2.text_input("Purchase Qnt")
+    count=col2.text_input("Purchase Quantity")
     desc=st.text_area("Description")
     submit=st.button("Add Equipment")
     if submit:
@@ -86,6 +86,15 @@ def app(otdb):
     if selected=="Available Equipments":
         st.title("Equipment database")
         df = createDataFrame(otdb.getEQPList())
+        hide_table_row_index = """
+                        <style>
+                        thead tr th:first-child {display:none}
+                        tbody th {display:none}
+                        </style>
+                        """
+
+        # Inject CSS with Markdown
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table(df)
     if selected =="Add New":
         st.title("Add New Equipment")

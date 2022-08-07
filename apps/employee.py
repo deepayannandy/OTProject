@@ -3,6 +3,17 @@ import pandas as pd
 import os
 base_path=os.getcwd()
 
+
+hide_table_row_index = """
+                <style>
+                thead tr th:first-child {display:none}
+                tbody th {display:none}
+                </style>
+                """
+
+    # Inject CSS with Markdown
+st.markdown(hide_table_row_index, unsafe_allow_html=True)
+
 def createDataFrame(rawdata):
     fullname=[]
     mobileNo=[]
@@ -28,4 +39,13 @@ def app(otdb):
     #st.image(Image.open(base_path+"/comp_logo/logo0.png"))
     st.title("Employee database")
     df=createDataFrame(otdb.getUserList())
+    hide_table_row_index = """
+                            <style>
+                            thead tr th:first-child {display:none}
+                            tbody th {display:none}
+                            </style>
+                            """
+
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.table(df)

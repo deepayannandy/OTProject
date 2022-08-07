@@ -8,6 +8,15 @@ import numpy as np
 selection=["PO Number","WO Number"]
 visiablereasult=False
 logo="https://firebasestorage.googleapis.com/v0/b/ots-pocket.appspot.com/o/projectFiles%2Flogo.jpeg?alt=media&token=3c4bd26d-a8f4-41d9-9853-f07ff3ee4e32"
+hide_table_row_index = """
+                <style>
+                thead tr th:first-child {display:none}
+                tbody th {display:none}
+                </style>
+                """
+
+    # Inject CSS with Markdown
+st.markdown(hide_table_row_index, unsafe_allow_html=True)
 def getProject(otdb,searchdata):
     res = otdb.db.collection("userProjects").where("po", "==", searchdata).get()
     return res
@@ -73,6 +82,15 @@ def showWODetails(otdb,wo):
         img.save(imgpath)
         st.image(openImage(imgpath))
         st.write("http://3.95.56.247:8080/wo/"+wo["wo"])
+    hide_table_row_index = """
+                            <style>
+                            thead tr th:first-child {display:none}
+                            tbody th {display:none}
+                            </style>
+                            """
+
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.write("Used Equipments")
     st.table({"Equipment Name": wo["equipments"], "Quantity": wo["equipQ"]})
     st.write("Consumables items")
