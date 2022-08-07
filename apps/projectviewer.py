@@ -72,7 +72,7 @@ def showWODetails(otdb,wo):
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     res = otdb.db.collection("Workorders").where("wo", "==", wo).get()
     wo=res[0].to_dict()
-    col0, col00 = st.columns((3, 1))
+    col0, col00,col000= st.columns((3, 1,1))
     col0.title("Work Details of : " + wo["wo"])
     with col00:
         qr.add_data("http://3.95.56.247:8080/wo/"+wo["wo"])
@@ -82,6 +82,14 @@ def showWODetails(otdb,wo):
         img.save(imgpath)
         st.image(openImage(imgpath))
         st.write("http://3.95.56.247:8080/wo/"+wo["wo"])
+    with col000:
+        qr.add_data("http://3.95.56.247:8080/invoice/"+wo["wo"])
+        qr.make(fit=True)
+        img = qr.make_image()
+        imgpath = os.path.join("qr_images", "invoice"+wo["wo"] + ".png")
+        img.save(imgpath)
+        st.image(openImage(imgpath))
+        st.write("http://3.95.56.247:8080/invoice/"+wo["wo"])
     hide_table_row_index = """
                             <style>
                             thead tr th:first-child {display:none}
