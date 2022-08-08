@@ -102,9 +102,17 @@ def showWODetails(otdb,wo):
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.write("Used Equipments")
-    st.table({"Equipment Name": wo["equipments"], "Quantity": wo["equipQ"]})
+    wozero=[]
+    print(len(wo["equipments"]))
+    for i in range(0,len(wo["equipments"])):
+        wozero.append(0)
+    st.table({"Equipment Name": wo["equipments"], "Quantity": wo["equipQ"],"Rental":wozero})
     st.write("Consumables items")
-    st.table({"Consumables Name": wo["consumables"], "Quantity": wo["consQ"]})
+    wozero = []
+    print(len(wo["consumables"]))
+    for i in range(0, len(wo["consumables"])):
+        wozero.append(0)
+    st.table({"Consumables Name": wo["consumables"], "Quantity": wo["consQ"],"Rental":wozero})
     st.header("Assigned Employee details")
     selectedemp=streamlit_menuEMP(wo["assignedEmployee"])
     showEMPDetails(otdb,selectedemp)
