@@ -70,13 +70,13 @@ def createcon(otdb):
                 col0, col00 = st.columns((3, 1))
                 col0.write("Scan to See the Equipment")
                 with col00:
-                    qr.add_data("http://3.95.56.247:8080/con/" + conid)
+                    qr.add_data("http://54.90.91.67:8080/con/" + conid)
                     qr.make(fit=True)
                     img = qr.make_image()
                     imgpath = os.path.join("qr_images", conid + ".png")
                     img.save(imgpath)
                     st.image(openImage(imgpath))
-                    st.write("http://3.95.56.247:8080/con/" + conid)
+                    st.write("http://54.90.91.67:8080/con/" + conid)
                 st.success("Consumable added successfully!")
 def showAddCon(otdb):
     global isworkorder

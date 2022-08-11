@@ -53,13 +53,13 @@ def showEMPDetails(otdb,emp):
     col0, col00 = st.columns((3, 1))
     col0.metric("Employee Name", em["fullname"])
     with col00:
-        qr.add_data("http://3.95.56.247:8080/employee/"+em["uniqueid"])
+        qr.add_data("http://54.90.91.67:8080/employee/"+em["uniqueid"])
         qr.make(fit=True)
         img=qr.make_image()
         imgpath=os.path.join("qr_images",em["uniqueid"]+".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
-        st.write("http://3.95.56.247:8080/employee/"+em["uniqueid"])
+        st.write("http://54.90.91.67:8080/employee/"+em["uniqueid"])
 
     col4, col5 = st.columns((1, 2))
     col4.metric("Unique id", em["uniqueid"])
@@ -76,22 +76,22 @@ def showWODetails(otdb,wo):
     col0.title("Work Details of : " + wo["wo"])
     with col00:
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data("http://3.95.56.247:8080/wo/"+wo["wo"])
+        qr.add_data("http://54.90.91.67:8080/wo/"+wo["wo"])
         qr.make(fit=True)
         img = qr.make_image()
         imgpath = os.path.join("qr_images", wo["wo"] + ".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
-        st.write("http://3.95.56.247:8080/wo/"+wo["wo"])
+        st.write("http://54.90.91.67:8080/wo/"+wo["wo"])
     with col000:
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data("http://3.95.56.247:8080/invoice/"+wo["wo"])
+        qr.add_data("http://54.90.91.67:8080/invoice/"+wo["wo"])
         qr.make(fit=True)
         img = qr.make_image()
         imgpath = os.path.join("qr_images", "invoice"+wo["wo"] + ".png")
         img.save(imgpath)
         st.image(openImage(imgpath))
-        st.write("http://3.95.56.247:8080/invoice/"+wo["wo"])
+        st.write("http://54.90.91.67:8080/invoice/"+wo["wo"])
     hide_table_row_index = """
                             <style>
                             thead tr th:first-child {display:none}
@@ -135,13 +135,13 @@ def app(otdb):
             col0, col00 = st.columns((3, 1))
             col0.title("Project Details:" + prj["po"])
             with col00:
-                qr.add_data("http://3.95.56.247:8080/po/"+prj["po"])
+                qr.add_data("http://54.90.91.67:8080/po/"+prj["po"])
                 qr.make(fit=True)
                 img = qr.make_image()
                 imgpath = os.path.join("qr_images",prj["po"]+ ".png")
                 img.save(imgpath)
                 st.image(openImage(imgpath))
-                st.write("http://3.95.56.247:8080/po/"+prj["po"])
+                st.write("http://54.90.91.67:8080/po/"+prj["po"])
             #col0.title("Project Details of : "+prj["po"])
             st.metric("Job Description",prj["jobDescriptions"])
             col2,col3 = st.columns((1,2))

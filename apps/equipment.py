@@ -71,13 +71,13 @@ def createequip(otdb):
                 col0, col00 = st.columns((3, 1))
                 col0.write("Scan to See the Equipment")
                 with col00:
-                    qr.add_data("http://3.95.56.247:8080/eq/" + eqid)
+                    qr.add_data("http://54.90.91.67:8080/eq/" + eqid)
                     qr.make(fit=True)
                     img = qr.make_image()
                     imgpath = os.path.join("qr_images", eqid + ".png")
                     img.save(imgpath)
                     st.image(openImage(imgpath))
-                    st.write("http://3.95.56.247:8080/eq/" + eqid)
+                    st.write("http://54.90.91.67:8080/eq/" + eqid)
                 st.success("Equipment added successfully!")
 
 def app(otdb):

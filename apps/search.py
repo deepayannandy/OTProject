@@ -18,13 +18,13 @@ st.markdown(hide_table_row_index, unsafe_allow_html=True)
 def showQr(type,data,name):
     st.title("Scan to see know more")
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-    qr.add_data("http://3.95.56.247:8080/po/"+type+"/"+ data)
+    qr.add_data("http://54.90.91.67:8080/po/"+type+"/"+ data)
     qr.make(fit=True)
     img = qr.make_image()
     imgpath = os.path.join("qr_images", data + ".png")
     img.save(imgpath)
     st.image(openImage(imgpath))
-    st.write("http://3.95.56.247:8080/"+type+"/"+ data)
+    st.write("http://54.90.91.67:8080/"+type+"/"+ data)
 def openImage(path):
     im=Image.open(path)
     return im

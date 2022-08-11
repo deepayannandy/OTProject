@@ -279,13 +279,13 @@ def showWOCreate(otdb):
             col0, col00 = st.columns((3, 1))
             col00.write("Scan to See the Work Order")
             with col00:
-                qr.add_data("http://3.95.56.247:8080/wo/" + wo)
+                qr.add_data("http://54.90.91.67:8080/wo/" + wo)
                 qr.make(fit=True)
                 img = qr.make_image()
                 imgpath = os.path.join("qr_images", wo + ".png")
                 img.save(imgpath)
                 st.image(openImage(imgpath))
-                st.write("http://3.95.56.247:8080/wo/" + wo)
+                st.write("http://54.90.91.67:8080/wo/" + wo)
             isworkorder=False
         if isworkorder==False:
             st.button("Close")
@@ -306,13 +306,13 @@ def createprojects(otdb):
             col0, col00 = st.columns((3, 1))
             col00.write("Scan to See the Project")
             with col00:
-                qr.add_data("http://3.95.56.247:8080/po/" + po)
+                qr.add_data("http://54.90.91.67:8080/po/" + po)
                 qr.make(fit=True)
                 img = qr.make_image()
                 imgpath = os.path.join("qr_images", po + ".png")
                 img.save(imgpath)
                 st.image(openImage(imgpath))
-                st.write("http://3.95.56.247:8080/po/" + po)
+                st.write("http://54.90.91.67:8080/po/" + po)
             st.success("Project Created Successfully")
 
 def createuserList(otdb):
