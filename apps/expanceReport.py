@@ -1,6 +1,5 @@
 import streamlit as st
-from PIL import Image
-import pytesseract
+
 import os
 base_path=os.getcwd()
 
@@ -9,6 +8,4 @@ def app():
     image=col0.file_uploader("Upload Bill")
     button=col00.button("Scan")
     if button:
-        text=pytesseract.image_to_string(Image.open(image))
-        print(text)
-        st.write(text)
+        st.write("This part is under development!")
