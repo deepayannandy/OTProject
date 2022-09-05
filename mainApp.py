@@ -1,15 +1,10 @@
 import streamlit as st
 from apps import home,employee, equipment, payroll, projects, expanceReport, consumable, projectviewer, search, rtc
-import pickle
-from pathlib import Path
+
 from streamlit_option_menu import option_menu
 import otsDBConnector as otdb
 
-# st.set_page_config(page_title='OTS Admin App',page_icon='',menu_items={
-# 'About': "An secure industrial app developed by OTS.",
-# 'Get help': "https://www.dnyindia.in",
-# 'Report a bug': None
-# })
+
 
 
 
