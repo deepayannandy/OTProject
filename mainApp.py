@@ -1,5 +1,5 @@
 import streamlit as st
-from apps import home,employee, equipment, payroll, projects, expanceReport, consumable, projectviewer, search
+from apps import home,employee, equipment, payroll, projects, expanceReport, consumable, projectviewer, search, rtc
 import pickle
 from pathlib import Path
 from streamlit_option_menu import option_menu
@@ -13,11 +13,11 @@ import otsDBConnector as otdb
 
 
 
-menu=["Home","Project Dashboard","Project Management","Employee database","Equipment database","Consumables","Payroll","Expence report"]
+menu=["Home","Project Dashboard","Project Management","Employee database","Equipment database","Consumables","Payroll","Real Time Status","Expence report"]
 
 def streamlit_menu():
-    options = ["Home","Project Dashboard", "Projects Management", "Employees", "Equipments", "Consumables","Payroll","Expence report"]  # required
-    icons = ["house", "hammer","bi-card-text", "person-fill", "gear", "bag","wallet2","file-bar-graph"]  # optional
+    options = ["Home","Project Dashboard", "Projects Management", "Employees", "Equipments", "Consumables","Payroll","Real Time Status","Expence report"]  # required
+    icons = ["house", "hammer","bi-card-text", "person-fill", "gear", "bag","wallet2","file-bar-graph","file-bar-graph"]  # optional
     with st.sidebar:
         selected = option_menu(
             menu_title="Quick Response Coded List( QRCL)",  # required
@@ -54,6 +54,8 @@ def main():
         projectviewer.app(otdb)
     if selected=="Expence report":
         expanceReport.app()
+    if selected=="Real Time Status":
+        rtc.app(otdb)
 
 
 
