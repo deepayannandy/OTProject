@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import os
 from streamlit_option_menu import option_menu
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import altair as alt
 base_path=os.getcwd()
 def streamlit_menu():
@@ -32,17 +32,27 @@ hide_table_row_index = """
 st.markdown(hide_table_row_index, unsafe_allow_html=True)
 def showdata(otdb):
     data= otdb.db.collection("rts").get()
+    today = datetime.today()
     datas=[]
     containers=[]
     days=[]
+    st.write("Week No. "+str(today.isocalendar()[1]))
+    st.write("Start Date. " + today.strftime("%Y-%m-%d"))
     for data in data:
         temp=data.to_dict()
         datas.append(temp)
-        containers.append(temp["Container"])
         day0=datetime.strptime(temp["Received"], '%Y-%m-%d')
-        day1 = datetime.strptime(temp["Outbound"], '%Y-%m-%d')
-        delta = day1 - day0
-        days.append(delta.days)
+        try:
+            day1 = datetime.strptime(temp["Outbound"], '%Y-%m-%d')
+        except:
+            day1=datetime.today()
+        print((day1 - datetime.today()).days)
+        start = today - timedelta(days=today.weekday())
+        print(start)
+        if (day1 - datetime.today()).days>-2:
+            delta = day1 - start
+            days.append(delta.days+1)
+            containers.append(temp["Container"]+" ("+temp["Received"]+") ")
     print(containers, days)
 
     chart_data = pd.DataFrame(
